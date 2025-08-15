@@ -18,14 +18,12 @@ export class MessagesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log('11111');
     return this.messagesService.findOne(id);
   }
 
   // Renvoie les messages qui contiennent le string de recherche
   @Get('content/:content')
   findByContent(@Param('content') content: string, @Query('chat_id') chat_id: string) {
-    console.log('22222');
     return this.messagesService.findByContent(chat_id, content);
   }
 
