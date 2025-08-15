@@ -12,17 +12,17 @@ export class PostsService {
     });
   }
 
-  findAll() {
+  async findAll() {
     return this.databaseService.posts.findMany();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.databaseService.posts.findUnique({
         where: { id },
     });  
   }
 
-  findByContent(search: string){
+  async findByContent(search: string){
     return this.databaseService.posts.findMany({
       where: { 
         content: { 
@@ -36,14 +36,14 @@ export class PostsService {
     })
   }
 
-  update(id: string, updatePostDto: Prisma.PostsUpdateInput) {
+  async update(id: string, updatePostDto: Prisma.PostsUpdateInput) {
     return this.databaseService.posts.update({
         where: { id },
         data: updatePostDto,
       });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     return this.databaseService.posts.delete({
         where: { id },
       });
