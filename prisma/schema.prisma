@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Users {
+  id                  String        @id @default(uuid())
+  username            String        @unique
+  email               String        @unique
+  password_hash       String
+  profile_picture_uri String?
+  bio                 String?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  followers           Follows[]     @relation("Followed")
+  following           Follows[]     @relation("Follower")
+  messages            Messages[]    @relation("UserMessages")
+  posts               Posts[]
+  users_chats         users_chats[]
+}
+
+model Posts {
+  id         String   @id @default(uuid())
+  user_id    String
+  title      String
+  content    String
+  address    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  mediaUri   String?
+  user       Users    @relation(fields: [user_id], references: [id])
+}
+
+model Follows {
+  id          String   @id @default(uuid())
+  follower_id String
+  followed_id String
+  created_at  DateTime @default(now())
+  followed    Users    @relation("Followed", fields: [followed_id], references: [id])
+  follower    Users    @relation("Follower", fields: [follower_id], references: [id])
+}
+
+model Chats {
+  id          String        @id @default(uuid())
+  name        String?
+  is_group    Boolean       @default(false)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  messages    Messages[]
+  users_chats users_chats[]
+}
+
+model users_chats {
+  id         String    @id @default(uuid())
+  user_id    String
+  chat_id    String
+  chat       Chats     @relation(fields: [user_id], references: [id])
+  user       Users     @relation(fields: [chat_id], references: [id])
+
+  @@unique([user_id, chat_id])
+}
+
+model Messages {
+  id         String        @id @default(uuid())
+  content    String
+  been_read  Boolean       @default(false)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  chat_id    String
+  user_id    String
+  chat       Chats         @relation(fields: [chat_id], references: [id])
+  sender     Users         @relation("UserMessages", fields: [user_id], references: [id])
+}
