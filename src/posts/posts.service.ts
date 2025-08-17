@@ -13,27 +13,88 @@ export class PostsService {
   }
 
   async findAll() {
-    return this.databaseService.posts.findMany();
+    const posts = await this.databaseService.posts.findMany({
+      include: {
+        user: true
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    return posts.map(post => ({
+      title: post.title,
+      address: post.address,
+      content: post.content,
+      user: {
+        user_id: post.user?.id,
+        username: post.user?.username,
+        profile_picture_uri: post.user?.profile_picture_uri,
+        bio: post.user?.bio,
+        created_at: post.user?.created_at,
+      },
+      created_at: post.created_at,
+      updated_at: post.updated_at,
+      mediaUri: post.mediaUri,
+    }));
   }
 
   async findOne(id: string) {
-    return this.databaseService.posts.findUnique({
-        where: { id },
-    });  
+    const post = await this.databaseService.posts.findUnique({
+      where: { id },
+      include: {
+        user: true
+      },
+    });
+
+    return {
+      title: post.title,
+      address: post.address,
+      content: post.content,
+      user: {
+        user_id: post.user?.id,
+        username: post.user?.username,
+        profile_picture_uri: post.user?.profile_picture_uri,
+        bio: post.user?.bio,
+        created_at: post.user?.created_at,
+      },
+      created_at: post.created_at,
+      updated_at: post.updated_at,
+      mediaUri: post.mediaUri,
+    };
   }
 
   async findByContent(search: string){
-    return this.databaseService.posts.findMany({
+    const posts = await this.databaseService.posts.findMany({
       where: { 
         content: { 
           contains: search,
           mode: 'insensitive',
         },
-       },
-       orderBy: {
+      },
+      orderBy: {
         created_at: 'desc',
-       }
+      },
+      include: {
+        user: true
+      },
     })
+    
+    return posts.map(post => ({
+      title: post.title,
+      address: post.address,
+      content: post.content,
+      user: {
+        user_id: post.user?.id,
+        username: post.user?.username,
+        profile_picture_uri: post.user?.profile_picture_uri,
+        bio: post.user?.bio,
+        created_at: post.user?.created_at,
+      },
+      created_at: post.created_at,
+      updated_at: post.updated_at,
+      mediaUri: post.mediaUri,
+    }));
   }
 
   async update(id: string, updatePostDto: Prisma.PostsUpdateInput) {
