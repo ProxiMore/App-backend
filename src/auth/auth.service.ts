@@ -45,11 +45,13 @@ export class AuthService {
   }
 
   // Login : génération du token JWT
-  async login(loginDto: { email: string; password: string }): Promise<{ access_token: string }> {
+  async login(loginDto: { email: string; password: string }): Promise<{ access_token: string, user_id: string }> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
     const payload = { sub: user.id, username: user.username };
+    const userId = user.id;
     return {
       access_token: this.jwtService.sign(payload),
+      user_id: userId
     };
   }
 }
