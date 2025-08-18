@@ -56,23 +56,24 @@ model Chats {
 }
 
 model users_chats {
-  id         String    @id @default(uuid())
-  user_id    String
-  chat_id    String
-  chat       Chats     @relation(fields: [user_id], references: [id])
-  user       Users     @relation(fields: [chat_id], references: [id])
+  id             String  @id @default(uuid())
+  user_id        String
+  chat_id        String
+  user_chat_name String? @db.VarChar
+  user           Users   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  chat           Chats   @relation(fields: [chat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([user_id, chat_id])
 }
 
 model Messages {
-  id         String        @id @default(uuid())
+  id         String   @id @default(uuid())
   content    String
-  been_read  Boolean       @default(false)
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
+  been_read  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   chat_id    String
   user_id    String
-  chat       Chats         @relation(fields: [chat_id], references: [id])
-  sender     Users         @relation("UserMessages", fields: [user_id], references: [id])
+  chat       Chats    @relation(fields: [chat_id], references: [id])
+  sender     Users    @relation("UserMessages", fields: [user_id], references: [id])
 }

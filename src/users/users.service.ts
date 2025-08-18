@@ -55,22 +55,50 @@ export class UsersService {
     }
 
     async findUserChats(_user_id: string) {
-      const user_chats = await this.databaseService.users_chats.findMany({
-        where: { 
-          user_id: _user_id
-        },
-      })
-  
-      if (user_chats.length === 0) return [];
-  
-      const chatIds = user_chats.map(c => c.chat_id);
-  
-      return this.databaseService.chats.findMany({
-        where: { 
-          id: { in: chatIds  }
-        },
-        orderBy : { created_at: 'desc', }
-      })
+
+      const userChats = await this.databaseService.users_chats.findMany({
+        where: { user_id: _user_id },
+      });
+
+      if (userChats.length === 0) return [];
+
+      const chatIds = userChats.map(uc => uc.chat_id);
+
+      const chats = await this.databaseService.chats.findMany({
+        where: { id: { in: chatIds } },
+        orderBy: { created_at: 'desc' },
+      });
+
+      const allUserChats = await this.databaseService.users_chats.findMany({
+        where: { chat_id: { in: chatIds } },
+        include: { user: true },
+      });
+
+      return chats.map(chat => {
+        const currentUserChat = allUserChats.find(
+          uc => uc.chat_id === chat.id && uc.user_id === _user_id
+        );
+
+        const otherUserChats = allUserChats
+          .filter(uc => uc.chat_id === chat.id && uc.user_id !== _user_id)
+          .map(uc => ({
+            user_chat_name: uc.user_chat_name,
+            user_id: uc.user?.id,
+            username: uc.user?.username,
+            profile_picture_uri: uc.user?.profile_picture_uri,
+            bio: uc.user?.bio,
+            created_at: uc.user?.created_at,
+          }));
+
+        return {
+          id: chat.id,
+          name: chat.name,
+          is_group: chat.is_group,
+          created_at: chat.created_at,
+          user_chats: { id: currentUserChat.id, user_chat_name: currentUserChat?.user_chat_name ?? null },
+          other_user_chats: otherUserChats,
+        };
+      });
     }
 
     async findUserFollows(_user_id: string) {
