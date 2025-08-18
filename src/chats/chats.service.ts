@@ -133,14 +133,33 @@ export class ChatsService {
   }
 
   async findChatMessages(_chat_id: string) {
-    return this.databaseService.messages.findMany({
+    const messages = await this.databaseService.messages.findMany({
       where: { 
         chat_id: _chat_id
       },
       orderBy : {
         created_at: 'desc',
-      }
+      },
+      include: {
+        sender: true
+      },
     })
+
+    return messages.map(message => ({
+      id: message.id,
+      content: message.content,
+      been_read: message.been_read,
+      created_at: message.created_at,
+      updated_at: message.updated_at,
+      chat_id: message.chat_id,
+      user: {
+        user_id: message.sender?.id,
+        username: message.sender?.username,
+        profile_picture_uri: message.sender?.profile_picture_uri,
+        bio: message.sender?.bio,
+        created_at: message.sender?.created_at,
+      },
+    }));
   }
 
   async update(id: string, updateChatDto: Prisma.ChatsUpdateInput) {
