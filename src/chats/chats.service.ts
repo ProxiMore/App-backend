@@ -34,18 +34,59 @@ export class ChatsService {
 
     const chatRes = await this.databaseService.chats.create({ data: dataChat });
 
-    let users = createChatDto.user_id.map((id) => ({
+    const users = createChatDto.user_id.map((id) => ({
       user_id: id,
-      chat_id: chatRes.id
-    }))
+      chat_id: chatRes.id,
+    }));
 
-    const dataUserChat = await this.databaseService.users_chats.createMany({ data: users });
-    
-    return { chat: chatRes,
-      userChat: dataUserChat
-    }
+    await this.databaseService.users_chats.createMany({ data: users });
 
+    const fullChat = await this.databaseService.chats.findUnique({
+      where: { id: chatRes.id },
+      include: {
+        users_chats: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (!fullChat) return [];
+
+    const creatorUserId = createChatDto.user_id[0];
+    const creatorChatUser = fullChat.users_chats.find(
+      (uc) => uc.user_id === creatorUserId
+    );
+
+    const otherUsers = fullChat.users_chats
+      .filter((uc) => uc.user_id !== creatorUserId)
+      .map((uc) => ({
+        user_chat_name: uc.user_chat_name,
+        user_id: uc.user.id,
+        username: uc.user.username,
+        profile_picture_uri: uc.user.profile_picture_uri,
+        bio: uc.user.bio,
+        created_at: uc.user.created_at,
+      }));
+
+    return [
+      {
+        id: fullChat.id,
+        name: fullChat.name,
+        is_group: fullChat.is_group,
+        created_at: fullChat.created_at,
+        user_chats: creatorChatUser
+          ? {
+              id: creatorChatUser.id,
+              user_chat_name: creatorChatUser.user_chat_name,
+            }
+          : null,
+        other_user_chats: otherUsers,
+      },
+    ];
   }
+
 
   async findAll() {
     const chats = await this.databaseService.chats.findMany({
