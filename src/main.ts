@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
@@ -12,8 +15,11 @@ async function bootstrap() {
         .setVersion('1.0')
         .addBearerAuth()
         .build();
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('doc', app, document);
+    // const document = SwaggerModule.createDocument(app, config);
+    const fileContents = fs.readFileSync('Swagger.yaml', 'utf8');
+    const openApiDocument = yaml.load(fileContents);
+
+    SwaggerModule.setup('doc', app, openApiDocument); // document
 
     // Other settings
     app.setGlobalPrefix('api');

@@ -1,0 +1,329 @@
+openapi: 3.0.0
+info:
+  title: ProxiMore collection
+  version: 1.0.0
+servers:
+  - url: https://app-backend-jhpm.onrender.com
+    description: Serveur de prod
+  - url: http://localhost:3000
+    description: Serveur local pour dev
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - default
+      summary: Auth register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: nom
+                email: email
+                password: password
+                profilePictureUri: ''
+                bio: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/login:
+    post:
+      tags:
+        - default
+      summary: Auth login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: email
+                password: password
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users:
+    post:
+      tags:
+        - default
+      summary: User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: Jean
+                email: jean@gmail.com
+                password_hash: jean
+                profilePictureUri: ''
+                bio: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - default
+      summary: Users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/9b3b47bf-2ab5-49ab-ae3b-701c5113e950:
+    get:
+      tags:
+        - default
+      summary: User by id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/username/TEST:
+    get:
+      tags:
+        - default
+      summary: User by username
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/userPosts/9b3b47bf-2ab5-49ab-ae3b-701c5113e950:
+    get:
+      tags:
+        - default
+      summary: User's posts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/userChats/9b3b47bf-2ab5-49ab-ae3b-701c5113e950:
+    get:
+      tags:
+        - default
+      summary: User's chats
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/userFollows/9b3b47bf-2ab5-49ab-ae3b-701c5113e950:
+    get:
+      tags:
+        - default
+      summary: User's follows
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts:
+    post:
+      tags:
+        - default
+      summary: Post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                user_id: 9b3b47bf-2ab5-49ab-ae3b-701c5113e950
+                title: Titre TEST
+                content: Détails TEST
+                address: Adresse TEST
+                mediaUri: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - default
+      summary: Posts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/adc1ffcd-fe14-4840-9fd6-288489cc35c8:
+    get:
+      tags:
+        - default
+      summary: Post by id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/content/TEST:
+    get:
+      tags:
+        - default
+      summary: Post by content
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/follows:
+    post:
+      tags:
+        - default
+      summary: Follow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                follower_id: 9b3b47bf-2ab5-49ab-ae3b-701c5113e950
+                followed_id: f653058d-8338-4c41-bbff-47b8b03fa7f0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - default
+      summary: Follows
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/follows/followerNumber/f653058d-8338-4c41-bbff-47b8b03fa7f0:
+    get:
+      tags:
+        - default
+      summary: Follower number
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/chats:
+    post:
+      tags:
+        - default
+      summary: Chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: nomChat
+                user_id:
+                  - 05a451b6-961c-42ca-9c97-9d96f144c951
+                  - f653058d-8338-4c41-bbff-47b8b03fa7f0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - default
+      summary: Chats
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/chats/39f5973a-7ee9-4c1d-a04a-2035a42a5c59:
+    get:
+      tags:
+        - default
+      summary: Chat
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/chats/chatUsers/39f5973a-7ee9-4c1d-a04a-2035a42a5c59:
+    get:
+      tags:
+        - default
+      summary: Chat's users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/chats/chatMessages/77c0b715-c6bb-4c06-9aee-a6e38c54466e:
+    get:
+      tags:
+        - default
+      summary: Chat's messages
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/messages:
+    post:
+      tags:
+        - default
+      summary: Message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                content: TEST
+                chat_id: 39f5973a-7ee9-4c1d-a04a-2035a42a5c59
+                user_id: 9b3b47bf-2ab5-49ab-ae3b-701c5113e950
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - default
+      summary: Messages
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/messages/83f84fc2-1311-4de6-9897-5700769b6c17:
+    get:
+      tags:
+        - default
+      summary: Message by id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/messages/content/TEST:
+    get:
+      tags:
+        - default
+      summary: Messages by content
+      parameters:
+        - name: chat_id
+          in: query
+          schema:
+            type: string
+          example: 39f5973a-7ee9-4c1d-a04a-2035a42a5c59
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
